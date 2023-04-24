@@ -2,10 +2,6 @@
 
 Python script that parses existing file names for season and episode terms and renames all files in a specified folder to match Jellyfin's naming convention. Supports [tags]. Files must have terms SXXEXX somewhere in the filename. Use it to tidy up downloaded seasons to work with Jellyfin.
 
-**LATEST RELEASE**
-
-https://github.com/moseymoose1/JellyfinRenamer/releases/tag/v1.1.0-alpha
-
 **Instructions**
 1. Execute the run.bat file.
 2. Copy the folder path from windows by right clicking on the address bar in explorer, ENTER.
