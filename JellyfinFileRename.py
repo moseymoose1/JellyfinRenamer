@@ -2,7 +2,7 @@ import os
 import sys
 import re
 
-# function to extract season number and episode number from filename
+
 def extract_episode_info(filename):
     # match the pattern of season number and episode number
     pattern = r"S(\d{2})E(\d{2})"
@@ -15,55 +15,64 @@ def extract_episode_info(filename):
     else:
         return None, None
 
-# main function
-def main():
-    # get folder path and tags from user input
-    folder_path = input("Enter the folder path: ")
-    tags_input = input("Enter tags separated by ';': ")
 
-    # check if tags are provided
-    if tags_input:
-        # split tags by semicolon and add square brackets around each tag
-        tags = "[" + "][".join(tags_input.split(";")) + "]"
-    else:
-        # if no tags provided, set tags to empty string
-        tags = ""
+def is_video_file(filename):
+    # check if file is a video file
+    video_extensions = {".mp4", ".avi", ".mkv", ".wmv", ".flv", ".m4v"}
+    extension = os.path.splitext(filename)[1].lower()
+    return os.path.isfile(filename) and extension in video_extensions
+
+
+def validate_tags(tags_input):
+    if not tags_input:
+        return ""
+
+    if not re.match(r"^\w+(;\w+)*$", tags_input):
+        raise ValueError("Tags must be alphanumeric and separated by semicolons.")
+
+    # split tags by semicolon and add square brackets around each tag
+    tags = "[" + "][".join(tags_input.split(";")) + "]"
+    # add a space between the episode pattern and the open square bracket
+    return " " + tags
+
+
+def main():
+    folder_path = input("Enter the folder path: ")
+
+    tags_input = input("Enter tags separated by ';', or leave blank for no tags: ")
+    tags = ""
+
+    try:
+        tags = validate_tags(tags_input)
+    except ValueError as e:
+        print(e)
+        sys.exit(1)
 
     # get a list of all files in the specified folder
     files = os.listdir(folder_path)
 
-    # loop through each file and rename if it matches the pattern
-    for filename in files:
-        # get the current file path
-        current_path = os.path.join(folder_path, filename)
+    for filename in [f for f in files if is_video_file(os.path.join(folder_path, f))]:
+        season_number, episode_number = extract_episode_info(filename)
 
-        # check if file is a directory
-        if not os.path.isdir(current_path):
-            # extract season number and episode number from filename
-            season_number, episode_number = extract_episode_info(filename)
+        if season_number and episode_number:
+            # create new filename with season number, episode number, and tags
+            new_filename = f"Episode S{season_number}E{episode_number}{tags}.mp4"
 
-            # check if season number and episode number exist
-            if season_number and episode_number:
-                # create new filename with season number, episode number, and tags
-                new_filename = f"Episode S{season_number}E{episode_number} {tags}.mp4"
+            # create new file path
+            new_path = os.path.join(folder_path, new_filename)
 
-                # create new file path
-                new_path = os.path.join(folder_path, new_filename)
+            # rename the file
+            os.rename(os.path.join(folder_path, filename), new_path)
 
-                # rename the file
-                os.rename(current_path, new_path)
-
-                # print success message
-                print(f"{filename} renamed to {new_filename}")
-            else:
-                # print error message
-                print(f"{filename} does not match the pattern SXXEXX and was not renamed")
+            # print success message
+            print(f"{filename} renamed to {new_filename}")
+        else:
+            # print error message
+            print(f"{filename} does not match the pattern SXXEXX and was not renamed")
 
     # print completion message
     print("All files completed.")
 
+
 if __name__ == "__main__":
     main()
-
-
-
