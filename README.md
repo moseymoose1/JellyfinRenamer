@@ -8,4 +8,4 @@ Python script that parses existing file names for season and episode terms and r
 3. List any tags you wish to add to the file names superated by ; e.i. 2160p;HDR (this will apply to all files in the folder)
 4. If you do not wish to add any tags, just hit ENTER with no values provided.
 
-*The run.bat should always be kept in the same folder as the JellyFinRename.py as the batch file will always look for the script in the current directory.
+*The run.bat should always be kept in the* ***same folder*** *as the JellyFinRename.py as the batch file will always look for the script in the current directory.*
