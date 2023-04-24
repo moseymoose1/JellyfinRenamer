@@ -6,7 +6,7 @@ import re
 def extract_episode_info(filename):
     # match the pattern of season number and episode number
     pattern = r"S(\d{2})E(\d{2})"
-    match = re.search(pattern, filename)
+    match = re.search(pattern, filename, re.IGNORECASE)
 
     if match:
         season_number = match.group(1)
